@@ -16,11 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
+from rest_framework.routers import SimpleRouter, DefaultRouter
 from todo import views
 
-router = routers.DefaultRouter()
-router.register(r'todos', views.TodoView, 'todo')
+router = DefaultRouter()
+router.register('todos', views.TodoView, 'todo')
+router.register("n_profiles", views.ProfileViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
