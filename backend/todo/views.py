@@ -23,7 +23,6 @@ def object_detection(picture):
         name = annotation.name
         score = annotation.score
         set_of_object_detected[name] = score
-    print (set_of_object_detected)
     name_of_max_score = max(zip(set_of_object_detected.values(), set_of_object_detected.keys()))[1]
     return name_of_max_score
 
@@ -41,9 +40,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
         bio = request.data["bio"]
         picture = request.data["picture"]
         result = object_detection(picture)
-        if result is None:
-            result = "1"
 
         Profile.objects.create(name=name, bio=bio, picture=picture)
 
-        return Response(f"Profile created successfully, this is an{result}", status=status.HTTP_200_OK)
+        return Response(f"Profile created successfully, this is a {result}", status=status.HTTP_200_OK)

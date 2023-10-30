@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from "react";
+import Imageupload from "./components/FileUpload";
+/*
 import Modal from "./components/Modal";
-import Imageupload from "./components/FileUpload"
 import axios from "axios";
+*/
 
 const App = () => {
+  return (
+    <Imageupload/>
+  )
+}
+export default App;
+
+/*
+const App = () => {
+  
   const [viewCompleted, setViewCompleted] = useState(false);
   const [todoList, setTodoList] = useState([]);
   const [modal, setModal] = useState(false);
@@ -126,6 +137,7 @@ const App = () => {
   };
 
   return (
+
     <main className="container">
       <h1 className="text-white text-uppercase text-center my-4">Todo app</h1>
       <div className="row">
@@ -146,13 +158,14 @@ const App = () => {
           </div>
         </div>
       </div>
+      
       {modal ? (
         <Modal
           activeItem={activeItem}
           toggle={toggle}
           onSave={handleSubmit}
         />
-      ) : null}
+      ) : null} 
       <Imageupload/>
 
     </main>
@@ -160,3 +173,5 @@ const App = () => {
 };
 
 export default App;
+*/
+
