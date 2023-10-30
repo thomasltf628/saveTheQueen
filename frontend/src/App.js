@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Modal from "./components/Modal";
+import Imageupload from "./components/FileUpload"
 import axios from "axios";
 
 const App = () => {
   const [viewCompleted, setViewCompleted] = useState(false);
-  const [responseMessage, setResponseMessage] = useState('');
   const [todoList, setTodoList] = useState([]);
   const [modal, setModal] = useState(false);
   const [activeItem, setActiveItem] = useState({
@@ -153,6 +153,7 @@ const App = () => {
           onSave={handleSubmit}
         />
       ) : null}
+      <Imageupload/>
 
     </main>
   );
