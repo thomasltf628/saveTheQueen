@@ -16,7 +16,7 @@ Setting up the Django backend
 
 8. Change directory to (directory of your repository)/Capstone_project/backend, run python manage.py runserver 
 
-9. Open browser, enter the link “127.0.0.1/8000/admin”, you are expected to see the administrator interface of Django 
+9. Open browser, enter the link “127.0.0.1:8000/admin”, you are expected to see the administrator interface of Django 
 
  
 
@@ -32,7 +32,7 @@ Setting up the React frontend
 
 5. Run command “npm start” 
 
-6. The frontend would pop up automatically on your browser, if not, enter the link” 127.0.0.1/3000”, you are expected to see the user 
+6. The frontend would pop up automatically on your browser, if not, enter the link” 127.0.0.1:3000”, you are expected to see the user 
    interface of our application 
 
 Current functionality 
