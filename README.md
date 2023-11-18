@@ -12,7 +12,7 @@ Setting up the Django backend
 
 6. Activate the virtual environment 
 
-7. Install the required library in the virtual environment by running pip install requirements.txt 
+7. Install the required library in the virtual environment by running pip install requirements.txt using "pip install -r requirements.txt"
 
 8. Change directory to (directory of your repository)/Capstone_project/backend, run python manage.py runserver 
 
