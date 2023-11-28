@@ -11,19 +11,18 @@ class Todo(models.Model):
 
 
 class Profile(models.Model):
-    name = models.CharField(max_length=30)
-    bio = models.TextField()
     picture = models.ImageField(upload_to = 'img', blank=True, null=True)
     
-    def __str__(self):
-        return self.name
+    def _str_(self):
+        return self.picture
+    
 
 class CarModel(models.Model):
     make = models.CharField(max_length=20)
     model_name = models.CharField(max_length=40)
-    year = models.IntegerField()
-    fuel_type = models.CharField(max_length=20)
-    transmission = models.CharField(max_length=15)
+    """year = models.IntegerField(default=2023)
+    fuel_type = models.CharField(max_length=20, default='Gasoline')
+    transmission = models.CharField(max_length=15, default='Automatics')"""
 
     def __str__(self):
         return self.model_name
