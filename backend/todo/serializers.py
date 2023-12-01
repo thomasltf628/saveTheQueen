@@ -20,5 +20,5 @@ class CarModelSerializer(serializers.ModelSerializer):
 class Car_ListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car_Listing
-        field =['id','model_name','price','mileage','location','listing_date','link_to_buyer']
+        field =['id','model_name','price','mileage','year','location','listing_date','link_to_buyer']
 

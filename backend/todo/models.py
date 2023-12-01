@@ -31,6 +31,7 @@ class Car_Listing(models.Model):
     car_model = models.ForeignKey(CarModel, on_delete=models.CASCADE)
     price = models.FloatField()
     mileage = models.IntegerField()
+    year = models.IntegerField(default=2023)
     location =models.CharField(max_length=50)
     listing_date = models.DateField()
     link_to_buyer = models.URLField(
