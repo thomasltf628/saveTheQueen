@@ -35,13 +35,13 @@ driver.get("https://www.goauto.ca/vehicles?refinementList=%7B%22stock_type%22%3A
 page_num = 2
 max_failures = 5
 failures = 0
-page_to_scrap = 2
+page_to_scrap = 5
 scrap_fail = 0
 website = 'goauto'
 data ={
-        'Source':[],
-        'Make':[],
-        'Model':[],
+        'source':[],
+        'make':[],
+        'model':[],
         'year':[],
         'price':[],
         'mileage':[],
@@ -64,7 +64,10 @@ while (page_num <= page_to_scrap):
                 link = block.find_element(By.CLASS_NAME, 'inventory_imageWrapper__xHDnp')
                 link_to_there = link.get_attribute('href')
                 print(link_to_there)
-                link_to_image = link.find_element(By.TAG_NAME, 'img').get_attribute('src')
+                image = WebDriverWait(link, timeout=3).until(
+                EC.presence_of_element_located((By.TAG_NAME, 'img'))
+                )
+                link_to_image = image.get_attribute('src')
                 print(link_to_image)
                 year = block.find_element(By.CLASS_NAME, 'inventory_content__DIqP5').find_element(By.TAG_NAME, 'span')
                 print(year.text)
@@ -78,20 +81,28 @@ while (page_num <= page_to_scrap):
                 for char in ', km"':
                     mile_todf = mile_todf.replace(char, '')
                 print(mile_todf)
+                try:
+                    mile_todf = int(mile_todf)
+                except:
+                    continue
                 price = block.find_element(By.CLASS_NAME, 'inventory_content__DIqP5').find_element(By.CLASS_NAME,'inventory_pricing__GwjgT')
                 price_todf = price.text
                 for char in '$,"':
                     price_todf = price_todf.replace(char, '')
                 print(price_todf)
+                try:
+                    price_todf = int(price_todf)
+                except:
+                    continue
                 available = block.find_element(By.CLASS_NAME, 'inventory_content__DIqP5').find_element(By.CLASS_NAME,'inventory_footer__wspJ5').find_element(By.TAG_NAME,'p')
 
-                driver.execute_script("window.scrollBy(0, 200);")
+                driver.execute_script("window.scrollBy(0, 175);")
                 df.loc[len(df.index)] = [website, make, model, year.text, price_todf, mile_todf, available.text,date.today(),link_to_there,link_to_image]
             except NoSuchElementException:
                 scrap_fail += 1
                 print (f'{scrap_fail} piece of information fails to be scrapped')
                 continue
-            time.sleep(0.5)
+            time.sleep(4)
         try:
             next = driver.find_element(By.XPATH, f"//button[text()='{page_num}']")
             page_num += 1

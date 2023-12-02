@@ -28,19 +28,26 @@ class CarModel(models.Model):
         return self.model_name
 
 class Car_Listing(models.Model):
-    car_model = models.ForeignKey(CarModel, on_delete=models.CASCADE)
+    source =models.CharField(max_length=50, default='Unknown') 
+    make = models.CharField(max_length=50, default='Unknown')
+    model = models.CharField(max_length=50)
+    year = models.IntegerField(default=2023)
     price = models.FloatField()
     mileage = models.IntegerField()
-    year = models.IntegerField(default=2023)
     location =models.CharField(max_length=50)
     listing_date = models.DateField()
     link_to_buyer = models.URLField(
         ("Link"), 
         max_length=256, 
         db_index=True, 
-        unique=True, 
+        unique=False, 
         blank=True
     )
+    link_to_image = models.URLField(
+        ("Link"), 
+        max_length=256, 
+        db_index=True, 
+        unique=False, 
+        blank=True,
+    )
 
-    def __str__(self):
-        return self.car_model

@@ -36,8 +36,7 @@ def extract_car_info(car_info):
 
     return make, model, year
 
-url = "https://www.autotrader.ca/cars/on/north%20oshawa/?rcp=0&rcs=0&prx=100&prv=Ontario&loc=L1G%200C5&hprc=True&wcp=True&sts=New-Used&inMarket=basicSearch"
-headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36'}
+url = "https://www.carpages.ca/used-cars/search/?search_radius=100&province_code=on&city=toronto&ll=43.6547,-79.3623"
 PATH = "C:/Program Files (x86)/chromedriver.exe"
 chrome_options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(options=chrome_options)
@@ -46,9 +45,9 @@ driver.get(url)
 page_num = 2
 max_failures = 5
 failures = 0
-page_to_scrap = 6
+page_to_scrap = 3
 scrap_fail = 0
-website = 'autotrader'
+website = 'carpages'
 data ={
         'source':[],
         'make':[],
@@ -66,58 +65,58 @@ df = pd.DataFrame(data)
 while (page_num <= page_to_scrap):
     try:
         text_box = WebDriverWait(driver, timeout=10).until(
-                EC.presence_of_element_located((By.ID, "listingsWrapperMainListing"))
+                EC.presence_of_element_located((By.CLASS_NAME, "main-container"))
             )
         time.sleep(3)
-        blocks = text_box.find_elements(By.CLASS_NAME, 'dealer-split-wrapper')
+        blocks = text_box.find_elements(By.CLASS_NAME, 't-flex.t-gap-6.t-items-start.t-p-6')
         for block in blocks:
             try:
-                year_make_and_model =  block.find_element(By.CLASS_NAME, 'title-with-trim')
+                year_make_and_model =  block.find_element(By.TAG_NAME, 'h4')
                 make, model, year = extract_car_info(year_make_and_model.text)
                 year = int(year)
                 print(make, model, year)
-                price = block.find_element(By.CLASS_NAME, 'price-amount')
+                price = block.find_element(By.CLASS_NAME, 't-font-bold.t-text-xl')
                 price_todf = price.text
                 for char in '$,"':
                     price_todf = price_todf.replace(char, '')
-                print(price_todf)
                 try:
                     price_todf = int(price_todf)
                 except:
                     continue
-                mileage = block.find_element(By.CLASS_NAME, 'odometer-proximity')
-                mileage_todf = mileage.text
-                for char in 'KM, "':
-                    mileage_todf = mileage_todf.replace(char, '')
-                print(mileage_todf)
+                mileages = block.find_elements(By.CLASS_NAME, 'number')
+                mile = ''
+                for mileage in mileages:
+                    mile += mileage.text
+                """for char in 'KM, "':
+                    mile = mile.replace(char, '')"""
+                mile = ''.join(filter(str.isdigit, mile))
+                print(mile)
                 try:
-                    mileage_todf = int(mileage_todf)
+                    mile = int(mile)
                 except:
                     continue
-                location = block.find_element(By.CLASS_NAME, 'top-detail-area').find_element(By.CLASS_NAME, 'overflow-ellipsis')
+                location = block.find_element(By.CLASS_NAME, 'vehicle__card--dealerInfo.t-m-0').find_element(By.TAG_NAME, 'p')
                 print(location.text)
                 listing_date = datetime.date.today()
-                link_to_buyer = block.find_element(By.CLASS_NAME, 'inner-link').get_attribute('href')
+                link_plus_img = block.find_element(By.TAG_NAME, 'a')
+                link_to_buyer = link_plus_img.get_attribute('href')
                 print(link_to_buyer)
-                
-                element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'photo-area')))
-                img_element = element.find_element(By.TAG_NAME, 'img')
-                link_to_image = img_element.get_attribute('src')
+                link_to_image = link_plus_img.find_element(By.TAG_NAME, 'img').get_attribute('src')
                 print(link_to_image)
-                driver.execute_script("window.scrollBy(0, 400);")
+                """driver.execute_script("window.scrollBy(0, 150);")"""
                 
-                df.loc[len(df.index)] = [website, make, model, year, price_todf, mileage_todf, location.text,listing_date,link_to_buyer,link_to_image]
+                df.loc[len(df.index)] = [website, make, model, year, price_todf, mile, location.text,listing_date,link_to_buyer,link_to_image]
+                time.sleep(1)
             except:
                 scrap_fail += 1
                 print (f'{scrap_fail} piece of information fails to be scrapped')
                 continue
-            time.sleep(0.5)
+    
         try:
-            next = driver.find_element(By.CLASS_NAME, f'page-link-{page_num}')
+            driver.get(f'https://www.carpages.ca/used-cars/search/?num_results=50&search_radius=100&province_code=on&city=toronto&ll=43.6547%2C-79.3623&p={page_num}')
             page_num += 1
             print(page_num)
-            time.sleep(3)
-            next.click()
+            time.sleep(1)
         except NoSuchElementException:
             print('404 not found')
             df.to_csv(f'{website}.csv', index=False)
@@ -132,6 +131,3 @@ while (page_num <= page_to_scrap):
             driver.quit()
             break
 df.to_csv(f'{website}.csv', index=False)  
-
-
-

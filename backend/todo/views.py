@@ -83,8 +83,6 @@ class TodoView(viewsets.ModelViewSet):
     serializer_class = TodoSerializer
     queryset = Todo.objects.all()
 
-
-
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer 
@@ -98,19 +96,11 @@ class ProfileViewSet(viewsets.ModelViewSet):
         Profile.objects.create(picture = picture)
         return JsonResponse({'generation_name': generation_name, 'make_name': make_name, 'model_name': model_name})
     
-class CarModelViewset(viewsets.ModelViewSet):
-    queryset = CarModel.objects.all()
-    serializer_class = CarModelSerializer 
-    parser_classes= (MultiPartParser,FormParser)
 
-    def create(self,request, *args, **kwargs):
-        return
-
-class Car_ListingViewset(viewsets.ModelViewSet):
+class Car_ListingViewSet(viewsets.ModelViewSet):
     queryset = Car_Listing.objects.all()
     serializer_class = Car_ListingSerializer
-    parser_classes= (MultiPartParser,FormParser)
 
-    def create(self,request, *args, **kwargs):
-        
-        return
+    def get_queryset(self):
+        model_name = self.request.query_params.get('model', '')
+        return Car_Listing.objects.filter(model__iexact=model_name).order_by('price')

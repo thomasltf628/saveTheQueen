@@ -14,11 +14,13 @@ class ProfileSerializer(serializers.ModelSerializer):
 class CarModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarModel
-        field =['id','make','model_name']
+        fields =['id','make','model_name']
         """field =['id','make','model_name','year','fuel_type','transmission']"""
 
 class Car_ListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car_Listing
-        field =['id','model_name','price','mileage','year','location','listing_date','link_to_buyer']
+        fields ='__all__'
+        """field = ['source','make','model', 'year','price',
+        'mileage','location','listing_date','link_to_buyer','link_to_image']"""
 

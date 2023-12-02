@@ -12,8 +12,12 @@ function Imageupload(){
       const formData = new FormData()
       formData.append('picture', picture)
       axios.post('http://localhost:8000/api/n_profiles/', formData).then((res) => {
-        const extractedMake = res.data.make_name;
-        setName(extractedMake);
+        const extractedModel = res.data.model_name;
+        setName(extractedModel);
+        console.log(res);
+        return axios.get(`http://localhost:8000/api/cars/?model=${extractedModel}`);
+      }).then((secondApiResponse) => {
+        console.log('Second API Response:', secondApiResponse);
       }).catch((error) => console.error('Error fetching data:', error));
     }
 

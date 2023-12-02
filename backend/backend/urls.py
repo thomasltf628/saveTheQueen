@@ -22,6 +22,7 @@ from todo import views
 router = DefaultRouter()
 router.register('todos', views.TodoView, 'todo')
 router.register("n_profiles", views.ProfileViewSet)
+router.register(r"cars", views.Car_ListingViewSet, basename='car')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
