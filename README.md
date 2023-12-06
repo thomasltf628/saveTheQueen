@@ -1,39 +1,82 @@
 Setting up the Django backend 
 
-1. Clone the project to your computer 
+1. Clone the project to your computer
 
-2. Switch to the most updated branch, pull request if needed 
+#  Running this command on your command prompt:
+      git clone --branch Importing_API_for_price_search https://github.com/thomasltf628/saveTheQueen.git <Directory path you want>
+#  e.g. if you want to put it in C:\Users\super\OneDrive\Desktop\adcademic\1003 , then put : 
+      git clone --branch Importing_API_for_price_search https://github.com/thomasltf628/saveTheQueen.git "C:\Users\super\OneDrive\Desktop\adcademic\1003"
 
-3. Create and switch to your new branch before you make any change 
+2. Create and switch to your new branch before you make any change 
 
-4. Open command prompt 
+#  Running this command on your command prompt:
+      git branch <your job>
+#  e.g. if you are going to modify the interface:
+      git branch modifying_interface
 
-5. Change directory to the virtual environment 
+#  Run this command also to checkout your new branch:
+      git checkout <branch you created>
+#  e.g. if you created a branch 'modifying_interface'
+      git checkout modifying_interface
 
-6. Activate the virtual environment 
+3. Change directory to the virtual environment 
 
-7. Install the required library in the virtual environment by running pip install requirements.txt using "pip install -r requirements.txt"
+#  I.Go to the Repositry of project you just cloned, double click the folder 'backend', then click the folder 'myenv311', go to the path space, copy the directory path 
+#  Running this command on your command prompt:
+      cd <the directory path you copied>
+#  e.g. if your directory path is 'C:\Users\thomas\Capstone_project\backend\myenv311'
+      cd C:\Users\thomas\Capstone_project\backend\myenv311
 
-8. Change directory to (directory of your repository)/Capstone_project/backend, run python manage.py runserver 
+4. Activate the virtual environment
+#  Run this command:
+      .\Scripts\activate
+#  if error is encountered, try to run the command prompt as administrator and then run the command:       
+      Set-ExecutionPolicy RemoteSigned
+#  Then run this again:
+      .\Scripts\activate
 
-9. Open browser, enter the link “127.0.0.1:8000/admin”, you are expected to see the administrator interface of Django 
+5. Install the required library in the virtual environment
+#  Run the following command:
+      pip install requirements.txt using "pip install -r requirements.txt"
+
+
+6. Run the django server
+#  Change the directory one step back:
+      cd ..
+#  Run server by:
+      python manage.py runserver
+
+7. Open browser, enter the link “127.0.0.1:8000/admin”, you are expected to see the administrator interface of Django 
 
  
 
 Setting up the React frontend 
 
-1. Install node 
+1. Install node.js
+#  Download and the install node from https://nodejs.org/en/download
 
-2. Use node –v in command prompt to check if node correctly installed 
+2. Check if node correctly installed
+#  open command prompt and run this command:
+      node –v
+#  if node is correctly installed, you would see the version of node
 
 3. Change directory to (directory of your repository)/Capstone_project/frontend 
+#  Run this command:
+      cd (directory of your repository)\Capstone_project\frontend 
+#  e.g. if your project is at the directory 'C:\Users\thomas\Capstone_project\frontend'
+      cd C:\Users\thomas\Capstone_project\frontend 
 
-4. Run command “npm install” 
+4. Install npm
+#  Run command:
+      npm install
 
-5. Run command “npm start” 
+5. Start the react server
+#  Run command:
+      npm start
 
-6. The frontend would pop up automatically on your browser, if not, enter the link” 127.0.0.1:3000”, you are expected to see the user 
-   interface of our application 
+6. Browse the interface
+#  Open your browser and type "127.0.0.1:3000” if it doesn't automatically shown
+
 
 Current functionality 
 
