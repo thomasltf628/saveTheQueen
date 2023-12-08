@@ -21,6 +21,7 @@ function Imageupload(){
       }).then(
         response => typeof response.data ==='string'? JSON.parse(response.data): response.data).then(data => { 
         setJsonData(data);
+        console.log(data)
       }).catch((error) => console.error('Error fetching data:', error));
     }
 

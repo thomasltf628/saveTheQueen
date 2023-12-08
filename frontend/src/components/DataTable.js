@@ -11,9 +11,11 @@ const DataTable = ({ jsonData }) => {
         price:item.price,
         mileage: item.mileage,
         location: item.location,
+        link_to_buyer: item.link_to_buyer,
+        year: item.year,
   }
   )
-  );
+  )
 
   return (
     <div>
@@ -24,7 +26,9 @@ const DataTable = ({ jsonData }) => {
           <th>Source</th>
           <th>Price</th>
           <th>Mileage</th>
+          <th>Year</th>
           <th>Location</th>
+          <th>Link</th>
         </tr>
       </thead>
       <tbody>
@@ -34,7 +38,9 @@ const DataTable = ({ jsonData }) => {
             <td>{rowData.source}</td>
             <td>{rowData.price}</td>
             <td>{rowData.mileage}</td>
+            <td>{rowData.year}</td>
             <td>{rowData.location}</td>
+            <td><a href={rowData.link_to_buyer}>Click to contact seller</a></td>
           </tr>
         ))}
       </tbody>
