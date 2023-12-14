@@ -35,7 +35,7 @@ return (
         
     <div className="footer-copyright">
         <hr/>    
-        <p>Copyright @2023 - ALL Right Reserved        @Powered by CarAi.net    </p>
+        <p>Copyright @2023 - ALL Right Reserved        @Powered by CarNet.AI</p>
     </div>
 </div>
 
