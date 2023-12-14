@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Imageupload from "./components/FileUpload";
 import './App.css'
 import { Navbar } from "./components/Navbar/Navbar";
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
@@ -22,7 +21,6 @@ const App = () => {
 
       </Routes>
       </BrowserRouter>
-      <Imageupload/>
     </div> 
 
   )

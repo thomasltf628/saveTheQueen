@@ -31,11 +31,12 @@ PATH = "C:/Program Files (x86)/chromedriver.exe"
 chrome_options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(options=chrome_options)
 
+locarion_of_searcher ="toronto"
 driver.get("https://www.goauto.ca/vehicles?refinementList=%7B%22stock_type%22%3A%5B%22USED%22%5D%7D")
 page_num = 2
 max_failures = 5
 failures = 0
-page_to_scrap = 5
+page_to_scrap = 50
 scrap_fail = 0
 website = 'goauto'
 data ={
@@ -52,6 +53,33 @@ data ={
     }
 df = pd.DataFrame(data)
 
+try:
+    time.sleep(15)
+    button_element = driver.find_element(By.CLASS_NAME, 'button_root__ebVgz')
+    print('found button')
+    time.sleep(3)
+    driver.execute_script("arguments[0].click();", button_element)
+    print('clicked button')
+    time.sleep(3)
+    input_area = WebDriverWait(driver, timeout=3).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, '[placeholder="Search…"]'))
+            )
+    time.sleep(3)
+    input_area.send_keys("")
+    time.sleep(3)
+    driver.execute_script("arguments[0].value = '';", input_area)
+    time.sleep(3)
+    input_area.send_keys(locarion_of_searcher)
+    time.sleep(2)
+    print('entered toronto')
+    time.sleep(3)
+    submit_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Set my location')]")
+    driver.execute_script("arguments[0].click();", submit_button)
+    print('clicked')
+
+except:
+    print('location already settled')
+
 while (page_num <= page_to_scrap):
     try:
         text_box = WebDriverWait(driver, timeout=10).until(
@@ -61,6 +89,8 @@ while (page_num <= page_to_scrap):
         blocks = text_box.find_elements(By.CLASS_NAME, 'inventory_inventoryCard__XCsAr')
         for block in blocks:
             try:
+                element_position = block.location['y']
+                driver.execute_script(f"window.scrollTo(0, {element_position});")
                 link = block.find_element(By.CLASS_NAME, 'inventory_imageWrapper__xHDnp')
                 link_to_there = link.get_attribute('href')
                 print(link_to_there)
@@ -102,7 +132,7 @@ while (page_num <= page_to_scrap):
                 scrap_fail += 1
                 print (f'{scrap_fail} piece of information fails to be scrapped')
                 continue
-            time.sleep(4)
+            time.sleep(0.5)
         try:
             next = driver.find_element(By.XPATH, f"//button[text()='{page_num}']")
             page_num += 1

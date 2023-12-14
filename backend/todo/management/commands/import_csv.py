@@ -14,9 +14,9 @@ class Command(BaseCommand):
         csv_files = options['csv_files']
 
         for csv_file in csv_files:
-            with open(csv_file, 'r') as file:
+            with open(csv_file, 'r', encoding='utf-8') as file:
                 reader = csv.reader(file)
-                next(reader)  # Skip header row
+                next(reader)  
 
                 for row in reader:
                     Car_Listing.objects.create(
