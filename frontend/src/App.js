@@ -9,7 +9,6 @@ import { About } from "./Pages/about";
 import { Home } from "./Pages/home";
 import { LoginPage } from "./Pages/LoginPage";
 
-
 const App = () => {
   return (
     <div >
