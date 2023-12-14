@@ -1,6 +1,6 @@
 import React from 'react'
-import Hero from '../components/Hero/hero'
-import Footer from '../components/Footer/footer'
+import Hero from '../components/Hero/Hero'
+import Footer from '../components/Footer/Footer'
 
 export const Home = () => {
   return (
