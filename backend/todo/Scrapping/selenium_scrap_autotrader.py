@@ -36,7 +36,9 @@ def extract_car_info(car_info):
 
     return make, model, year
 
-url = "https://www.autotrader.ca/cars/on/north%20oshawa/?rcp=0&rcs=0&prx=100&prv=Ontario&loc=L1G%200C5&hprc=True&wcp=True&sts=New-Used&inMarket=basicSearch"
+province = "on"
+city = "toronto"
+url = f"https://www.autotrader.ca/cars/{province}/{city}"
 headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36'}
 PATH = "C:/Program Files (x86)/chromedriver.exe"
 chrome_options = webdriver.ChromeOptions()
@@ -72,6 +74,8 @@ while (page_num <= page_to_scrap):
         blocks = text_box.find_elements(By.CLASS_NAME, 'dealer-split-wrapper')
         for block in blocks:
             try:
+                element_position = block.location['y']
+                driver.execute_script(f"window.scrollBy(0, {element_position});")
                 year_make_and_model =  block.find_element(By.CLASS_NAME, 'title-with-trim')
                 make, model, year = extract_car_info(year_make_and_model.text)
                 year = int(year)
@@ -104,7 +108,7 @@ while (page_num <= page_to_scrap):
                 img_element = element.find_element(By.TAG_NAME, 'img')
                 link_to_image = img_element.get_attribute('src')
                 print(link_to_image)
-                driver.execute_script("window.scrollBy(0, 400);")
+
                 
                 df.loc[len(df.index)] = [website, make, model, year, price_todf, mileage_todf, location.text,listing_date,link_to_buyer,link_to_image]
             except:

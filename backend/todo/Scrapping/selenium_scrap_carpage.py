@@ -35,8 +35,9 @@ def extract_car_info(car_info):
     year = year_match.group() if year_match else None
 
     return make, model, year
-
-url = "https://www.carpages.ca/used-cars/search/?search_radius=100&province_code=on&city=toronto&ll=43.6547,-79.3623"
+province = "on"
+city = "toronto"
+url = f"https://www.carpages.ca/used-cars/search/?search_radius=100&province_code={province}&city={city}"
 PATH = "C:/Program Files (x86)/chromedriver.exe"
 chrome_options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(options=chrome_options)
@@ -45,7 +46,7 @@ driver.get(url)
 page_num = 2
 max_failures = 5
 failures = 0
-page_to_scrap = 3
+page_to_scrap = 8
 scrap_fail = 0
 website = 'carpages'
 data ={
@@ -71,6 +72,8 @@ while (page_num <= page_to_scrap):
         blocks = text_box.find_elements(By.CLASS_NAME, 't-flex.t-gap-6.t-items-start.t-p-6')
         for block in blocks:
             try:
+                element_position = block.location['y']
+                driver.execute_script(f"window.scrollTo(0, {element_position});")
                 year_make_and_model =  block.find_element(By.TAG_NAME, 'h4')
                 make, model, year = extract_car_info(year_make_and_model.text)
                 year = int(year)
@@ -102,11 +105,9 @@ while (page_num <= page_to_scrap):
                 link_to_buyer = link_plus_img.get_attribute('href')
                 print(link_to_buyer)
                 link_to_image = link_plus_img.find_element(By.TAG_NAME, 'img').get_attribute('src')
-                print(link_to_image)
-                """driver.execute_script("window.scrollBy(0, 150);")"""
-                
+                print(link_to_image)                
                 df.loc[len(df.index)] = [website, make, model, year, price_todf, mile, location.text,listing_date,link_to_buyer,link_to_image]
-                time.sleep(1)
+                time.sleep(0.5)
             except:
                 scrap_fail += 1
                 print (f'{scrap_fail} piece of information fails to be scrapped')

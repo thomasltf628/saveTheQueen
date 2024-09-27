@@ -1,4 +1,3 @@
-#This script require multiple scrapping, as only 21 record could be scrappedeach time
 #loop over different make and model at a time interval
 #choose place
 #solve problem of 21 items by ListItemPage-0,1,2,3,4
@@ -54,7 +53,9 @@ driver.get(url)
 max_failures = 5
 failures = 0
 scrap_fail = 0
-num_of_count_remains = 150
+max_scrolls = 120
+scroll_count = 0    
+num_of_page_to_scrap = 5
 website = 'kijijiauto'
 locarion_of_searcher = 'Toro'
 data ={
@@ -72,7 +73,6 @@ data ={
 df = pd.DataFrame(data)
 
 try:
-
     button_element = driver.find_element(By.CSS_SELECTOR, '[data-testid="LocationLabelLink"]')
     print('found button')
 
@@ -82,10 +82,15 @@ try:
     input_area = WebDriverWait(driver, timeout=10).until(
                 EC.presence_of_element_located((By.ID, 'LocationAutosuggest'))
             )
+    time.sleep(3)
+    input_area.send_keys("")
+    time.sleep(3)
+    driver.execute_script("arguments[0].value = '';", input_area)
+    time.sleep(3)
     input_area.send_keys(locarion_of_searcher)
     time.sleep(2)
     input_area.send_keys(Keys.BACKSPACE * 1)
-    time.sleep(5)
+    time.sleep(3)
     print('entered toronto')
     time.sleep(3)
     submit_button = driver.find_element(By.CSS_SELECTOR, '[data-testid="LocationModalSubmitButton"]')
@@ -100,62 +105,60 @@ try:
             EC.presence_of_element_located((By.CSS_SELECTOR, '[data-testid="SearchResultList"]'))
         )
     time.sleep(3)
-    blocks = text_box.find_elements(By.TAG_NAME, 'article')
-    
-    for block in blocks:
-        num_of_count_remains -= 1
-        try:
-            while True:
-                last_height = driver.execute_script("return document.body.scrollHeight")
-                driver.execute_script("window.scrollBy(0, 200);")
-                time.sleep(2)
-                new_height = driver.execute_script("return document.body.scrollHeight")
-                if new_height == last_height:
-                    break
-            id_car = block.find_element(By.CSS_SELECTOR, '[data-testid="VehicleListItem"]').get_attribute('data-test-ad-id')
-            print(id_car)
-            link_to_buyer = f'https://www.kijijiautos.ca/vip/{id_car}'
-            year_make_and_model =  block.find_element(By.TAG_NAME, 'h2')
-            make, model, year = extract_car_info(year_make_and_model.text)
-            print(make,model,year)
-            price = block.find_element(By.CLASS_NAME, 'mcN7dZ').find_element(By.CSS_SELECTOR, '[data-testid="searchResultItemPrice"]')
-            price_todf = price.text
-            for char in '$,"':
-                price_todf = price_todf.replace(char, '')
+    for i in range(5):
+        print(i)
+        page = driver.find_element(By.CSS_SELECTOR, f'[data-testid="ListItemPage-{i}"]')
+        blocks = page.find_elements(By.TAG_NAME, 'article')
+        for block in blocks:
+            element_position = block.location['y']
+            driver.execute_script(f"window.scrollTo(0, {element_position});")
             try:
-                price_todf = int(price_todf)
-            except:
-                continue
-            mileage_location = block.find_element(By.CLASS_NAME, 'icN7dZ').find_elements(By.TAG_NAME, 'li')
-            for index, ele in enumerate (mileage_location):
-                dummy = ele.find_element(By.TAG_NAME, 'span')
-                if index == 0:
-                    mileage = dummy.text
-                    for char in 'km, "':
-                        mileage = mileage.replace(char, '')
-                    print(mileage)
-                elif index == 1:
-                    location = dummy.text
-                    print(location)
-                else:
+                id_car = block.find_element(By.CSS_SELECTOR, '[data-testid="VehicleListItem"]').get_attribute('data-test-ad-id')
+                print(id_car)
+                link_to_buyer = f'https://www.kijijiautos.ca/vip/{id_car}'
+                year_make_and_model =  block.find_element(By.TAG_NAME, 'h2')
+                make, model, year = extract_car_info(year_make_and_model.text)
+                print(make,model,year)
+                price = block.find_element(By.CLASS_NAME, 'mcN7dZ').find_element(By.CSS_SELECTOR, '[data-testid="searchResultItemPrice"]')
+                price_todf = price.text
+                for char in '$,"':
+                    price_todf = price_todf.replace(char, '')
+                try:
+                    price_todf = int(price_todf)
+                except:
                     continue
-            try:
-                mileage = int(mileage)
+                mileage_location = block.find_element(By.CLASS_NAME, 'icN7dZ').find_elements(By.TAG_NAME, 'li')
+                for index, ele in enumerate (mileage_location):
+                    dummy = ele.find_element(By.TAG_NAME, 'span')
+                    if index == 0:
+                        mileage = dummy.text
+                        for char in 'km, "':
+                            mileage = mileage.replace(char, '')
+                        print(mileage)
+                    elif index == 1:
+                        location = dummy.text
+                        print(location)
+                    else:
+                        continue
+                try:
+                    mileage = int(mileage)
+                except:
+                    continue
+                                
+                listing_date = datetime.date.today()            
+                element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'b1E1YI')))
+                img_element = element.find_element(By.TAG_NAME, 'img')
+                link_to_image = img_element.get_attribute('src')
+                print(link_to_image)
+                """driver.execute_script("window.scrollBy(0, 170);")"""
+                df.loc[len(df.index)] = [website, make, model, year, price_todf, mileage, location,listing_date,link_to_buyer,link_to_image]
             except:
+                scrap_fail += 1
+                print (f'{scrap_fail} piece of information fails to be scrapped')
                 continue
-                            
-            listing_date = datetime.date.today()            
-            element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'b1E1YI')))
-            img_element = element.find_element(By.TAG_NAME, 'img')
-            link_to_image = img_element.get_attribute('src')
-            print(link_to_image)
-            time.sleep(2)
-            df.loc[len(df.index)] = [website, make, model, year, price_todf, mileage, location,listing_date,link_to_buyer,link_to_image]
-        except:
-            scrap_fail += 1
-            print (f'{scrap_fail} piece of information fails to be scrapped')
-            continue
-        time.sleep(0.5)
+            time.sleep(1)
+        time.sleep(2)
+        print('next page')
 except Exception as e:
     print(f'Exception: {str(e)}')
     failures += 1
